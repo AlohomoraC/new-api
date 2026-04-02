@@ -46,6 +46,7 @@ export default function SettingsHeaderNavModules(props) {
       enabled: true,
       requireAuth: false, // 默认不需要登录鉴权
     },
+    userGuide: true,
     docs: true,
     about: true,
   });
@@ -86,6 +87,7 @@ export default function SettingsHeaderNavModules(props) {
         enabled: true,
         requireAuth: false,
       },
+      userGuide: true,
       docs: true,
       about: true,
     };
@@ -133,6 +135,17 @@ export default function SettingsHeaderNavModules(props) {
     if (props.options && props.options.HeaderNavModules) {
       try {
         const modules = JSON.parse(props.options.HeaderNavModules);
+        const defaultModules = {
+          home: true,
+          console: true,
+          pricing: {
+            enabled: true,
+            requireAuth: false,
+          },
+          userGuide: true,
+          docs: true,
+          about: true,
+        };
 
         // 处理向后兼容性：如果pricing是boolean，转换为对象格式
         if (typeof modules.pricing === 'boolean') {
@@ -142,7 +155,10 @@ export default function SettingsHeaderNavModules(props) {
           };
         }
 
-        setHeaderNavModules(modules);
+        setHeaderNavModules({
+          ...defaultModules,
+          ...modules,
+        });
       } catch (error) {
         // 使用默认配置
         const defaultModules = {
@@ -152,6 +168,7 @@ export default function SettingsHeaderNavModules(props) {
             enabled: true,
             requireAuth: false,
           },
+          userGuide: true,
           docs: true,
           about: true,
         };
@@ -177,6 +194,11 @@ export default function SettingsHeaderNavModules(props) {
       title: t('模型广场'),
       description: t('模型定价，需要登录访问'),
       hasSubConfig: true, // 标识该模块有子配置
+    },
+    {
+      key: 'userGuide',
+      title: t('用户指南'),
+      description: t('平台接入说明与常见配置示例'),
     },
     {
       key: 'docs',

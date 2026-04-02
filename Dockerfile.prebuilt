@@ -1,0 +1,14 @@
+# 使用预构建的二进制文件，无需在容器内编译
+FROM local-debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates tzdata wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates
+
+# 复制本地编译好的 linux/amd64 二进制
+COPY new-api-linux-amd64 /new-api
+
+EXPOSE 3000
+WORKDIR /data
+ENTRYPOINT ["/new-api"]
