@@ -1,0 +1,1 @@
+- [Deploy images locally first](feedback_deploy_images_locally.md) — Build linux/amd64 images locally and upload; never docker build on the server.

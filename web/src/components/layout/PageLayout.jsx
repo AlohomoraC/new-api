@@ -42,7 +42,7 @@ const { Sider, Content, Header } = Layout;
 
 const PageLayout = () => {
   const [userState, userDispatch] = useContext(UserContext);
-  const [, statusDispatch] = useContext(StatusContext);
+  const [statusState, statusDispatch] = useContext(StatusContext);
   const isMobile = useIsMobile();
   const [collapsed, , setCollapsed] = useSidebarCollapsed();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -103,18 +103,32 @@ const PageLayout = () => {
   useEffect(() => {
     loadUser();
     loadStatus().catch(console.error);
-    let systemName = getSystemName();
+  }, []);
+
+  useEffect(() => {
+    const systemName = statusState?.status?.system_name || getSystemName();
     if (systemName) {
       document.title = systemName;
     }
-    let logo = getLogo();
-    if (logo) {
-      let linkElement = document.querySelector("link[rel~='icon']");
-      if (linkElement) {
-        linkElement.href = logo;
-      }
+
+    const logo = statusState?.status?.logo || getLogo();
+    if (!logo) {
+      return;
     }
-  }, []);
+
+    const iconLinks = document.querySelectorAll("link[rel~='icon']");
+    if (iconLinks.length > 0) {
+      iconLinks.forEach((linkElement) => {
+        linkElement.href = logo;
+      });
+      return;
+    }
+
+    const linkElement = document.createElement('link');
+    linkElement.rel = 'icon';
+    linkElement.href = logo;
+    document.head.appendChild(linkElement);
+  }, [statusState?.status?.system_name, statusState?.status?.logo]);
 
   useEffect(() => {
     let preferredLang;

@@ -53,6 +53,12 @@ web/           — React frontend
 
 ## Rules
 
+### Rule 0: develop rule
+- 一切代码变更需要在本地启动验证通过
+- 本地验证通过，如需重新构建镜像，在本地docker打镜像
+- 本地镜像打好后上传到服务器。启动服务
+- 登陆服务器方式 ssh root@216.36.103.252
+
 ### Rule 1: JSON Package — Use `common/json.go`
 
 All JSON marshal/unmarshal operations MUST use the wrapper functions in `common/json.go`:

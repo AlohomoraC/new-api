@@ -1,6 +1,7 @@
 .github
 .git
 *.md
+!USER_GUIDE.md
 .vscode
 .gitignore
 Makefile

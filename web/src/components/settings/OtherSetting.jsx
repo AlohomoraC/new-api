@@ -28,7 +28,12 @@ import {
   Space,
   Card,
 } from '@douyinfe/semi-ui';
-import { API, showError, showSuccess, timestamp2string } from '../../helpers';
+import {
+  API,
+  showError,
+  showSuccess,
+  timestamp2string,
+} from '../../helpers';
 import { marked } from 'marked';
 import { useTranslation } from 'react-i18next';
 import { StatusContext } from '../../context/Status';
@@ -157,6 +162,12 @@ const OtherSetting = () => {
         SystemName: true,
       }));
       await updateOption('SystemName', inputs.SystemName);
+      const nextStatus = {
+        ...(statusState?.status || {}),
+        system_name: inputs.SystemName,
+      };
+      statusDispatch({ type: 'set', payload: nextStatus });
+      localStorage.setItem('system_name', inputs.SystemName);
       showSuccess(t('系统名称已更新'));
     } catch (error) {
       console.error(t('系统名称更新失败'), error);
@@ -174,6 +185,12 @@ const OtherSetting = () => {
     try {
       setLoadingInput((loadingInput) => ({ ...loadingInput, Logo: true }));
       await updateOption('Logo', inputs.Logo);
+      const nextStatus = {
+        ...(statusState?.status || {}),
+        logo: inputs.Logo,
+      };
+      statusDispatch({ type: 'set', payload: nextStatus });
+      localStorage.setItem('logo', inputs.Logo);
       showSuccess('Logo 已更新');
     } catch (error) {
       console.error('Logo 更新失败', error);
@@ -447,7 +464,7 @@ const OtherSetting = () => {
               <Form.TextArea
                 label={t('首页内容')}
                 placeholder={t(
-                  '在此输入首页内容，支持 Markdown & HTML 代码，设置后首页的状态信息将不再显示。如果输入的是一个链接，则会使用该链接作为 iframe 的 src 属性，这允许你设置任意网页作为首页',
+                  '在此输入首页说明文档内容，支持 Markdown、HTML 或外部链接。保存后会显示在首页 Banner 下方的说明区域',
                 )}
                 field={'HomePageContent'}
                 onChange={handleInputChange}
