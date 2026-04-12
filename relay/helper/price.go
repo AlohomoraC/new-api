@@ -132,6 +132,11 @@ func ModelPriceHelper(c *gin.Context, info *relaycommon.RelayInfo, promptTokens 
 		QuotaToPreConsume:    preConsumedQuota,
 	}
 
+	// 注入模型额外系数（仅管理后台可配置，默认 1.0 不影响计费）
+	if extraRatio := ratio_setting.GetModelExtraRatio(info.OriginModelName); extraRatio != 1.0 {
+		priceData.AddOtherRatio("extra_ratio", extraRatio)
+	}
+
 	if common.DebugEnabled {
 		println(fmt.Sprintf("model_price_helper result: %s", priceData.ToSetting()))
 	}

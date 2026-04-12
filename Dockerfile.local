@@ -1,10 +1,9 @@
 # 使用本地预构建的前端 dist，只做 Go 编译 + 最终镜像
-FROM golang:1.26-alpine AS builder
+FROM golang:1.22-alpine AS builder
 
 ENV GO111MODULE=on CGO_ENABLED=0
 ENV GOPROXY=https://goproxy.cn,direct
 ENV GOOS=linux GOARCH=amd64
-ENV GOEXPERIMENT=greenteagc
 
 WORKDIR /build
 

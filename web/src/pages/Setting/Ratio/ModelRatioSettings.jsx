@@ -42,6 +42,7 @@ export default function ModelRatioSettings(props) {
   const [inputs, setInputs] = useState({
     ModelPrice: '',
     ModelRatio: '',
+    ModelExtraRatio: '',
     CacheRatio: '',
     CreateCacheRatio: '',
     CompletionRatio: '',
@@ -179,6 +180,32 @@ export default function ModelRatioSettings(props) {
                 },
               ]}
               onChange={(value) => setInputs({ ...inputs, ModelRatio: value })}
+            />
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col xs={24} sm={16}>
+            <Form.TextArea
+              label={t('模型额外系数')}
+              extraText={t(
+                '仅管理后台可见，额外对模型计费结果乘以该系数，默认为 1（不影响计费）',
+              )}
+              placeholder={t(
+                '为一个 JSON 文本，键为模型名称，值为系数，例如：{"gpt-4o": 1.5}',
+              )}
+              field={'ModelExtraRatio'}
+              autosize={{ minRows: 6, maxRows: 12 }}
+              trigger='blur'
+              stopValidateWithError
+              rules={[
+                {
+                  validator: (rule, value) => verifyJSON(value),
+                  message: '不是合法的 JSON 字符串',
+                },
+              ]}
+              onChange={(value) =>
+                setInputs({ ...inputs, ModelExtraRatio: value })
+              }
             />
           </Col>
         </Row>

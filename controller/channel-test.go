@@ -142,7 +142,15 @@ func testChannel(channel *model.Channel, testModel string, endpointType string, 
 		Header: make(http.Header),
 	}
 
-	cache, err := model.GetUserCache(1)
+	// 使用 root 用户（而非硬编码 ID=1），避免 root 用户 ID 不为 1 时报 record not found
+	rootUser := model.GetRootUser()
+	if rootUser == nil {
+		return testResult{
+			localErr:    fmt.Errorf("root user not found"),
+			newAPIError: nil,
+		}
+	}
+	cache, err := model.GetUserCache(rootUser.Id)
 	if err != nil {
 		return testResult{
 			localErr:    err,
@@ -155,7 +163,7 @@ func testChannel(channel *model.Channel, testModel string, endpointType string, 
 	c.Request.Header.Set("Content-Type", "application/json")
 	c.Set("channel", channel.Type)
 	c.Set("base_url", channel.GetBaseURL())
-	group, _ := model.GetUserGroup(1, false)
+	group, _ := model.GetUserGroup(rootUser.Id, false)
 	c.Set("group", group)
 
 	newAPIError := middleware.SetupContextForSelectedChannel(c, channel, testModel)

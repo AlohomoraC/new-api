@@ -1,0 +1,5 @@
+FROM scratch
+COPY new-api-amd64 /new-api
+EXPOSE 3000
+WORKDIR /data
+ENTRYPOINT ["/new-api"]

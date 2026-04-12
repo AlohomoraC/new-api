@@ -326,6 +326,10 @@ var modelPriceMap = types.NewRWMap[string, float64]()
 var modelRatioMap = types.NewRWMap[string, float64]()
 var completionRatioMap = types.NewRWMap[string, float64]()
 
+// extraRatioMap 存储模型额外系数，key=模型名，value=系数（默认 1.0）
+// 仅管理后台可见，不暴露给普通用户
+var extraRatioMap = types.NewRWMap[string, float64]()
+
 var defaultCompletionRatio = map[string]float64{
 	"gpt-4-gizmo-*":  2,
 	"gpt-4o-gizmo-*": 3,
@@ -731,4 +735,25 @@ func GetModelRatioOrPrice(model string) (float64, bool, bool) { // price or rati
 		return modelRatio, false, true
 	}
 	return 37.5, false, false
+}
+
+// GetModelExtraRatio 返回指定模型的额外计费系数，默认为 1.0（不影响原有计费）
+func GetModelExtraRatio(name string) float64 {
+	name = FormatMatchingModelName(name)
+	ratio, ok := extraRatioMap.Get(name)
+	if !ok || ratio <= 0 {
+		return 1.0
+	}
+	return ratio
+}
+
+// UpdateModelExtraRatioByJSONString 从 JSON 字符串更新额外系数表
+// JSON 格式：{"model-name": 1.5, "gpt-4o": 2.0}
+func UpdateModelExtraRatioByJSONString(jsonStr string) error {
+	return types.LoadFromJsonString(extraRatioMap, jsonStr)
+}
+
+// ModelExtraRatio2JSONString 将当前额外系数表序列化为 JSON 字符串
+func ModelExtraRatio2JSONString() string {
+	return extraRatioMap.MarshalJSONString()
 }
